@@ -163,8 +163,10 @@
       	  <span class="caret"></span>
       	</button>
       	<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-      	  <li id="temp-select">Temperature</li>
-      	  <li id="humidity-select">Humidity</li>
+      	  <li id="temp-select" class="var-select">Temperature</li>
+      	  <li id="humidity-select" class="var-select">Humidity</li>
+      	  <li id="light-select" class="var-select">Light</li>
+      	  <li id="vacancy-select" class="var-select">Vacancy</li>
       	</ul>
       </div>
       <div id="graph-sensor-selector" class="dropdown" style="">
@@ -178,6 +180,7 @@
     
     <div class="panel-footer" style="height: 50px;"></div>
     
+    <script src="{% static 'brent/properties.js' %}"></script>
     <script src="{% static 'brent/home.js' %}"></script>
     
   </body>

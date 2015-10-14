@@ -1,73 +1,73 @@
-var properties = [
-    {
-	name: "property1",
-	postcode: "HA0 1AA",
-	type: "terrace",
-	sensors: [
-	    {
-		id: 0,
-		location: "Living Room",
-		measurements: [
-		    {
-			datetime: '2015-10-09 10:47:01.482559',
-			temp: 20.112,
-			humidity: 50,
-			lux: 2386,
-		    },
-		    {
-			datetime: '2015-10-09 11:47:01.482559',
-			temp: 22.112,
-			humidity: 58,
-			lux: 2786,
-		    },
-		    {
-			datetime: '2015-10-09 13:47:01.482559',
-			temp: 23.192,
-			humidity: 57,
-			lux: 3386,
-		    },
-		]
-	    },
-	    {
-		id: 1,
-		location: "Kitchen",
-		measurements: [
-		    {
-			datetime: '2015-10-09 12:47:01.482559',
-			temp: 24.192,
-			humidity: 52,
-			lux: 2886,
-		    },
+// var properties = [
+//     {
+// 	name: "property1",
+// 	postcode: "HA0 1AA",
+// 	type: "terrace",
+// 	sensors: [
+// 	    {
+// 		id: 0,
+// 		location: "Living Room",
+// 		measurements: [
+// 		    {
+// 			datetime: '2015-10-09 10:47:01.482559',
+// 			temperature: 20.112,
+// 			humidity: 50,
+// 			lux: 2386,
+// 		    },
+// 		    {
+// 			datetime: '2015-10-09 11:47:01.482559',
+// 			temperature: 22.112,
+// 			humidity: 58,
+// 			lux: 2786,
+// 		    },
+// 		    {
+// 			datetime: '2015-10-09 13:47:01.482559',
+// 			temperature: 23.192,
+// 			// humidity: 57,
+// 			lux: 3386,
+// 		    },
+// 		]
+// 	    },
+// 	    {
+// 		id: 1,
+// 		location: "Kitchen",
+// 		measurements: [
+// 		    {
+// 			datetime: '2015-10-09 12:47:01.482559',
+// 			temp: 24.192,
+// 			humidity: 52,
+// 			lux: 2886,
+// 		    },
 
-		],
-	    }
-	]
-    },
-    {
-	name: "property2",
-	postcode: "HA0 1AB",
-	type: "semi-detached",
-	sensors: [
-	    {
-		id: 0,
-		location: "Kitchen",
-		measurements: [],
-	    }
-	],
-    },
-    {
-	name: "property3",
-	postcode: "HA0 1AN",
-	type: "flat",
-	sensors: [
-	    {
-		id: 0,
-		location: "Downstairs Corridor",
-		measurements: [],
-	    }
-	],
-    },
-]
+// 		],
+// 	    }
+// 	]
+//     },
+//     {
+// 	name: "property2",
+// 	postcode: "HA0 1AB",
+// 	type: "semi-detached",
+// 	sensors: [
+// 	    {
+// 		id: 0,
+// 		location: "Kitchen",
+// 		measurements: [],
+// 	    }
+// 	],
+//     },
+//     {
+// 	name: "property3",
+// 	postcode: "HA0 1AN",
+// 	type: "flat",
+// 	sensors: [
+// 	    {
+// 		id: 0,
+// 		location: "Downstairs Corridor",
+// 		measurements: [],
+// 	    }
+// 	],
+//     },
+// ]
 
 $(document).ready(function(){
     var property;
@@ -104,6 +104,8 @@ $(document).ready(function(){
         .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
     $("#properties .btn-group .btn").click(function(){
+	console.log("properties:");
+	console.log(properties);
 	for(i=0; i<properties.length; i++){
 	    if(properties[i].name == $(this).find("input").attr("id")){
 		property = properties[i];
@@ -120,21 +122,26 @@ $(document).ready(function(){
 
     $("#properties .btn-group .btn").first().click();
 
-    $("#temp-select").click(function(){
-	if(varButton.html() != "Temperature"){
-	    console.log("select temp");
-	    varButton.html("Temperature");
-	    refreshGraph();
-	}
+    $(".var-select").click(function(){
+	varButton.text($(this).text());
+	refreshGraph();
     });
+    
+    // $("#temp-select").click(function(){
+    // 	if(varButton.html() != "Temperature"){
+    // 	    console.log("select temp");
+    // 	    varButton.html("Temperature");
+    // 	    refreshGraph();
+    // 	}
+    // });
 
-    $("#humidity-select").click(function(){
-	if(varButton.html() != "Humidity"){
-	    console.log("select humidity");
-	    varButton.html("Humidity");
-	    refreshGraph();
-	}
-    });
+    // $("#humidity-select").click(function(){
+    // 	if(varButton.html() != "Humidity"){
+    // 	    console.log("select humidity");
+    // 	    varButton.html("Humidity");
+    // 	    refreshGraph();
+    // 	}
+    // });
 
     function refreshGraph(){
 	console.log("refreshGraph");
@@ -145,7 +152,7 @@ $(document).ready(function(){
 	var varName = $.trim(varButton.text());
 	var sensor;
 	for(i=0; i<property.sensors.length; i++){
-	    if(property.sensors[i].id == parseInt(sensorSelector.find("button").text())){
+	    if(property.sensors[i].id == sensorSelector.find("button").text()){
 		sensor = property.sensors[i];
 		break;
 	    }
@@ -160,17 +167,24 @@ $(document).ready(function(){
 	
 	var dataset = []
 	for(i=0; i<measurements.length; i++){
-	    datum = {
-		datetime: measurements[i].datetime,
-		val: null,
-	    }
+	    var propertyName;
 	    if(varName == "Temperature"){
-		datum.val = measurements[i].temp;
+		propertyName = "temperature";
+	    } else if (varName == "Humidity"){
+		propertyName = "relative_humidity";
+	    } else if (varName == "Light"){
+		propertyName = "light";
+	    } else if (varName == "Vacancy"){
+		propertyName  = "vacancy";
 	    }
-	    else if(varName == "Humidity"){
-		datum.val = measurements[i].humidity;
-	    }
+	    
+	    if(measurements[i].hasOwnProperty(propertyName)){
+		datum = {
+		    datetime: measurements[i].datetime,
+		    val: measurements[i][propertyName],
+		}
 	    dataset.push(datum);
+	    }
 	}
 
 	console.log(dataset);
@@ -211,16 +225,16 @@ $(document).ready(function(){
 	yaxis.orient('left');
 	    
 	
-	svg.selectAll("text")
-    	    .data(dataset)
-    	    .enter()
-    	    .append("text")
-    	    .text(function(d){ return d.val; })
-    	    .attr({
-    		x: function(d, i){ return xscale(d.datetime);},
-    		y: function(d){ return yscale(d.val); },
-    		"text-anchor": "middle",
-    	    });
+	// svg.selectAll("text")
+    	//     .data(dataset)
+    	//     .enter()
+    	//     .append("text")
+    	//     .text(function(d){ return d.val; })
+    	//     .attr({
+    	// 	x: function(d, i){ return xscale(d.datetime);},
+    	// 	y: function(d){ return yscale(d.val); },
+    	// 	"text-anchor": "middle",
+    	//     });
 	
 	var line = d3.svg.line()
     	    .x(function(d){ return xscale(d.datetime); })
@@ -254,9 +268,24 @@ $(document).ready(function(){
 	}
     };
 
+    // $("#graph-sensor-selector").click(function(){
+    // 	console.log("#graph-sensor-selector click");
+    // });
+    
+    // $("#graph-sensor-selector ul").click(function(){
+    // 	console.log("#graph-sensor-selector ul click");
+    // });
+    
+    // $("#graph-sensor-selector ul li").click(function(){
+    // 	console.log("#graph-sensor-selector ul li click");
+    // });
     
     $("#graph-sensor-selector ul li").click(function(){
-	$("#graph-sensor-selector button").html($(this).html());
+	console.log("test");
+	// console.log($(this));
+	// console.log($(this).html());
+	// $("#graph-sensor-selector button").html($(this).html());
+	$("#graph-sensor-selector button").text($.trim($(this).text()));
 	refreshGraph();
     });
 
