@@ -47,26 +47,63 @@ var properties = [
 	name: "property2",
 	postcode: "HA0 1AB",
 	type: "semi-detached",
-	sensors: [],
+	sensors: [
+	    {
+		id: 0,
+		location: "Kitchen",
+		measurements: [],
+	    }
+	],
     },
     {
 	name: "property3",
 	postcode: "HA0 1AN",
 	type: "flat",
-	sensors: [],
+	sensors: [
+	    {
+		id: 0,
+		location: "Downstairs Corridor",
+		measurements: [],
+	    }
+	],
     },
 ]
 
 $(document).ready(function(){
+    var property;
     var property_details = $("#property-details");
     var rows = property_details.find("tr")
-    console.log(rows);
     var name_row = $(rows[0]);
     var postcode_row = $(rows[1]);
     var type_row = $(rows[2]);
+    var varButton = $("#graph-var-selector button");
+    var sensorSelector = $("#graph-sensor-selector");
+
+    for(i=0; i<properties.length; i++){
+	var sensors = properties[i].sensors
+	for(j=0; j<sensors.length; j++){
+	    var measurements = sensors[j].measurements;
+	    for(k=0; k<measurements.length; k++){
+		var date = new Date(measurements[k].datetime);
+		measurements[k].datetime = date;
+	    }
+	}
+    }
+
+    console.log(properties);
+    
+    var m = [20, 20, 30, 50],
+	w = 960 - m[1] - m[3],
+	h = 500 - m[0] - m[2],
+	barPadding = 1;
+    
+    var svg = d3.select("#graphs").append("svg")
+        .attr("width", w + m[1] + m[3])
+        .attr("height", h + m[0] + m[2])
+	.append("g")
+        .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
     $("#properties .btn-group .btn").click(function(){
-	var property;
 	for(i=0; i<properties.length; i++){
 	    if(properties[i].name == $(this).find("input").attr("id")){
 		property = properties[i];
@@ -77,96 +114,151 @@ $(document).ready(function(){
 	name_row.find("td").last().html(property.name);
 	postcode_row.find("td").last().html(property.postcode);
 	type_row.find("td").last().html(property.type);
+	listSensors();
+	refreshGraph();
     });
 
     $("#properties .btn-group .btn").first().click();
 
-    var m = [20, 20, 30, 50],
-	w = 960 - m[1] - m[3],
-	h = 500 - m[0] - m[2],
-	barPadding = 1;
-    
-    
-    var svg = d3.select("#graphs").append("svg")
-        .attr("width", w + m[1] + m[3])
-        .attr("height", h + m[0] + m[2])
-	.append("g")
-        .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
-
-    var sensor = properties[0].sensors[0];
-    var measurements = sensor.measurements;
-
-    console.log(sensor);
-    console.log(measurements);
-
-    for(i=0; i<measurements.length; i++){
-	var date = new Date(measurements[i].datetime);
-	console.log(date);
-    }
-
-    console.log("Random Number: " + Math.random());
-
-    for(i=0; i<measurements.length; i++){
-	measurements[i].datetime = new Date(measurements[i].datetime);
-    }
-
-    var minDate = d3.min(measurements, function(d){
-	return d.datetime;
+    $("#temp-select").click(function(){
+	if(varButton.html() != "Temperature"){
+	    console.log("select temp");
+	    varButton.html("Temperature");
+	    refreshGraph();
+	}
     });
 
-    var maxDate = d3.max(measurements, function(d){
-	return d.datetime;
+    $("#humidity-select").click(function(){
+	if(varButton.html() != "Humidity"){
+	    console.log("select humidity");
+	    varButton.html("Humidity");
+	    refreshGraph();
+	}
     });
 
-    console.log(measurements);
-    console.log(minDate);
-    console.log(maxDate);
-    
-    var xscale = d3.time.scale().range([0, w]).domain([minDate, maxDate]);
-    var xaxis = d3.svg.axis();
-    xaxis.orient('bottom');
-    xaxis.scale(xscale);
-    // xaxis.ticks(d3.time.minutes, 30)
-    // xaxis.ticks(measurements.length);
-    // xaxis.tickFormat(d3.time.format('%Y-%m-%d %H:%M'))
-    svg.append("g")
-	.call(xaxis)
-	.attr("transform", "translate(0, " + h + ")");
+    function refreshGraph(){
+	console.log("refreshGraph");
 
-    var minTemp = d3.min(measurements, function(d){return d.temp;})
-    minTemp = minTemp - 0.1 * minTemp;
-    console.log(minTemp);
-    var maxTemp = d3.max(measurements, function(d){return d.temp;})
-    maxTemp = maxTemp + 0.1 * maxTemp;
-    console.log(maxTemp);
-    var yscale = d3.scale.linear()
-	.range([h, 0])
-	.domain([minTemp, maxTemp]);
-    var yaxis = d3.svg.axis();
-    yaxis.scale(yscale);
-    yaxis.orient('left');
-    svg.append("g").call(yaxis);
-    
-    svg.selectAll('rect')
-	.data(measurements)
-	.enter()
-	.append("rect")
-	.attr({
-	    x: function(d, i){return i * (w / measurements.length);},
-	    y: function(d){ return yscale(d.temp); },
-	    width: w / measurements.length - barPadding,
-	    height: function(d){ return h - yscale(d.temp); },
-	});
+	// $(svg).empty();
+	$(svg[0]).empty();
+	
+	var varName = $.trim(varButton.text());
+	var sensor;
+	for(i=0; i<property.sensors.length; i++){
+	    if(property.sensors[i].id == parseInt(sensorSelector.find("button").text())){
+		sensor = property.sensors[i];
+		break;
+	    }
+	}
+	// var sensor = property.sensors[0] // TODO: Need a sensor selector
+	console.log("sensor");
+	console.log(sensor);
+	var measurements = sensor.measurements;
+	console.log(sensor.measurments);
 
-    svg.selectAll("text")
-	.data(measurements)
-	.enter()
-	.append("text")
-	.text(function(d){ return d.temp; })
-	.attr({
-	    x: function(d, i){return (i + 0.5) * (w / measurements.length);},
-	    y: function(d){ return h - d.temp; },
-	    "text-anchor": "middle",
+	console.log(varName);
+	
+	var dataset = []
+	for(i=0; i<measurements.length; i++){
+	    datum = {
+		datetime: measurements[i].datetime,
+		val: null,
+	    }
+	    if(varName == "Temperature"){
+		datum.val = measurements[i].temp;
+	    }
+	    else if(varName == "Humidity"){
+		datum.val = measurements[i].humidity;
+	    }
+	    dataset.push(datum);
+	}
+
+	console.log(dataset);
+
+	var minDate = d3.min(dataset, function(d){
+	    return d.datetime;
 	});
+	
+	var maxDate = d3.max(dataset, function(d){
+	    return d.datetime;
+	});
+	
+	console.log(measurements);
+	console.log(minDate);
+	console.log(maxDate);
+	
+	var xscale = d3.time.scale().range([0, w]).domain([new Date(minDate - 3600 * 1000), new Date(maxDate.getTime() + (3600 * 1000))]);
+	var xaxis = d3.svg.axis();
+	xaxis.orient('bottom');
+	xaxis.scale(xscale);
+	// xaxis.ticks(d3.time.minutes, 30)
+	// xaxis.ticks(measurements.length);
+	// xaxis.tickFormat(d3.time.format('%Y-%m-%d %H:%M'))
+	// svg.append("g")
+	// 	.call(xaxis)
+	// 	.attr("transform", "translate(0, " + h + ")");
+
+	var minY = d3.min(dataset, function(d){ return d.val; });
+	var maxY = d3.max(dataset, function(d){ return d.val; });
+	console.log(minY);
+	console.log(maxY);
+	
+	var yscale = d3.scale.linear()
+	    .range([h, 0])
+	    .domain([minY - minY * 0.1, maxY + maxY * 0.1]);
+	var yaxis = d3.svg.axis();
+	yaxis.scale(yscale);
+	yaxis.orient('left');
+	    
+	
+	svg.selectAll("text")
+    	    .data(dataset)
+    	    .enter()
+    	    .append("text")
+    	    .text(function(d){ return d.val; })
+    	    .attr({
+    		x: function(d, i){ return xscale(d.datetime);},
+    		y: function(d){ return yscale(d.val); },
+    		"text-anchor": "middle",
+    	    });
+	
+	var line = d3.svg.line()
+    	    .x(function(d){ return xscale(d.datetime); })
+    	    .y(function(d){ return yscale(d.val); })
+	
+	
+	svg.append("path")
+            .datum(dataset)
+            .attr("class", "line")
+            .attr("d", line);
+	
+	svg.append("g").call(xaxis)
+    	    .attr("transform", "translate(0, " + h + ")")
+	    .attr("class", "axis");
+	svg.append("g").call(yaxis)
+	    .attr("class", "axis");
+
+    }
+
+    function listSensors(){
+	console.log("listSensors");
+	var sensorDropdownList = sensorSelector.find("ul");
+	var sensorDropdownButton = sensorSelector.find("button");
+	sensorDropdownList.empty()
+	var sensors = property.sensors;
+	for(i=0; i<sensors.length; i++){
+	    if(i == 0){
+		sensorDropdownButton.text(sensors[i].id);
+	    }
+	    sensorDropdownList.append("<li>" + sensors[i].id + "</li>");
+	}
+    };
+
+    
+    $("#graph-sensor-selector ul li").click(function(){
+	$("#graph-sensor-selector button").html($(this).html());
+	refreshGraph();
+    });
 
 });
+
