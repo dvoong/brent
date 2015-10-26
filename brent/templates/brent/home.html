@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-GB"> <!-- First two characters are the language, if there are more than two then the rest describe the dialect -->
   <head>
-    <title>Brent</title>
+    <title>OpenTRV Brent Trial</title>
     {% load staticfiles %}
     <link rel="stylesheet" href="{% static 'brent/base.css' %}" />
 
@@ -114,43 +114,51 @@
     </nav>
     
     <div class="container">
-      <div class="row" style="text-align: center">
-	<h2>Select Property</h2>
-      </div>
-      <div id="properties" class="row" style="margin-top: 10px; text-align: center;">
-
-	<div class="btn-group" data-toggle="buttons">
-	  <label class="btn btn-primary active">
-	    <input type="radio" name="property" id="property1" autocomplete="off" checked> Property 1
-	  </label>
-	  <label class="btn btn-primary">
-	    <input type="radio" name="property" id="property2" autocomplete="off"> Property 2
-	  </label>
-	  <label class="btn btn-primary">
-	    <input type="radio" name="property" id="property3" autocomplete="off"> Property 3
-	  </label>
+      <section id="properties-section">
+	<div class="row" style="text-align: center">
+	  <h2>Properties</h2>
 	</div>
-      </div> <!-- properties -->
+
+	<section id="property-selection-section">
+	  <button class="selected">Property1</button>
+	  <button>Property2</button>
+	  <button>Property3</button>
+	</section> <!-- property-selection-section -->
+	<div id="properties" class="row" style="margin-top: 10px; text-align: center;">
+
+	  <div class="btn-group" data-toggle="buttons">
+	    <label class="btn btn-primary active">
+	      <input type="radio" name="property" id="property1" autocomplete="off" checked> Property 1
+	    </label>
+	    <label class="btn btn-primary">
+	      <input type="radio" name="property" id="property2" autocomplete="off"> Property 2
+	    </label>
+	    <label class="btn btn-primary">
+	      <input type="radio" name="property" id="property3" autocomplete="off"> Property 3
+	    </label>
+	  </div>
+	</div> <!-- properties -->
 	
-      <div class="row" style="width: 600px; text-align: center; margin-left: auto; margin-right: auto;">
-	<h3>Property Details</h3>
-	<table id="property-details" class="table" style="margin-top: 20px">
-	  <tbody>
-	    <tr>
-	      <th>Name</th>
-	      <td></td>
-	    </tr>
-	    <tr>
-	      <th>Postcode</th>
-	      <td></td>
-	    </tr>
-	    <tr>
-	      <th>Type</th>
-	      <td></td>
-	    </tr>
-	  </tbody>
-	</table>
-      </div> <!-- property details -->
+	<div class="row" style="width: 600px; text-align: center; margin-left: auto; margin-right: auto;">
+	  <h3>Property Details</h3>
+	  <table id="property-details" class="table" style="margin-top: 20px">
+	    <tbody>
+	      <tr>
+		<th>Name</th>
+		<td></td>
+	      </tr>
+	      <tr>
+		<th>Postcode</th>
+		<td></td>
+	      </tr>
+	      <tr>
+		<th>Type</th>
+		<td></td>
+	      </tr>
+	    </tbody>
+	  </table>
+	</div> <!-- property details -->
+      </section> <!-- properties section -->
     </div>
     
     <div id="graphs" class="container" style="text-align: center; position: relative; width: 960px;">
