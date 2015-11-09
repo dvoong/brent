@@ -3,7 +3,7 @@
   <head>
     <title>OpenTRV Brent Trial</title>
     {% load staticfiles %}
-    <link rel="stylesheet" href="{% static 'brent/base.css' %}" />
+    <link rel="stylesheet" href="{% static 'base.css' %}" />
 
     <!-- JQuery -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -124,24 +124,10 @@
 	  <button>Property2</button>
 	  <button>Property3</button>
 	</section> <!-- property-selection-section -->
-	<div id="properties" class="row" style="margin-top: 10px; text-align: center;">
 
-	  <div class="btn-group" data-toggle="buttons">
-	    <label class="btn btn-primary active">
-	      <input type="radio" name="property" id="property1" autocomplete="off" checked> Property 1
-	    </label>
-	    <label class="btn btn-primary">
-	      <input type="radio" name="property" id="property2" autocomplete="off"> Property 2
-	    </label>
-	    <label class="btn btn-primary">
-	      <input type="radio" name="property" id="property3" autocomplete="off"> Property 3
-	    </label>
-	  </div>
-	</div> <!-- properties -->
-	
-	<div class="row" style="width: 600px; text-align: center; margin-left: auto; margin-right: auto;">
-	  <h3>Property Details</h3>
-	  <table id="property-details" class="table" style="margin-top: 20px">
+	<section id="property-details-section">
+	  <h2>Property Details</h2>
+	  <table>
 	    <tbody>
 	      <tr>
 		<th>Name</th>
@@ -155,41 +141,145 @@
 		<th>Type</th>
 		<td></td>
 	      </tr>
-	    </tbody>
 	  </table>
-	</div> <!-- property details -->
-      </section> <!-- properties section -->
-    </div>
+	</section> <!-- property-details-section -->
+
+	<section id="data-section">
+	  <h2>Data</h2>
+	  <section id="data-filter-section">
+	    <h3>Filter</h3>
+	    <form>
+	      <table>
+		<tr>
+		  <th>First Datetime</th>
+		  <td><input name="first-date"></td>
+		</tr>
+		<tr>
+		  <th>Last Datetime</th>
+		  <td><input name="last-date"></td>
+		</tr>
+		<tr>
+		  <th>Sensor</th>
+		  <td><select name="sensor"></select></td>
+		</tr>
+		<tr>
+		  <th></th><td><input type="submit"></td>
+		</tr>
+	      </table>
+	    </form>
+	  </section> <!-- filter-section" -->
+	  <div id="data-table-div" style="overflow:auto; max-height: 400px;">
+	    <table id="data-table">
+	      <tr>
+		<th>Datetime</th>
+		<th>Temperature (C)</th>
+		<th>Humidity (%)</th>
+		<th>Light</th>
+		<th>Occupancy (H)</th>
+		<th>Battery</th>
+	      </tr>
+	    </table>
+	  </div> <!-- data-table-div -->
+
+	  <section id="graph-section">
+	    <table>
+	      <tr>
+		<th>Quantity: </th>
+		<td>
+		  <select id="quantity-selector">
+		  </select>
+		</td>
+	      </tr>
+	    </table>
+	    <div id="graph-div">
+	      <svg id="graph">
+	      </svg>
+	    </div> <!-- graph-div -->
+	  </section> <!-- graph-section -->
+	  
+	</section> <!-- data-section -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+    <!-- 	<div id="properties" class="row" style="margin-top: 10px; text-align: center;"> -->
+
+    <!-- 	  <div class="btn-group" data-toggle="buttons"> -->
+    <!-- 	    <label class="btn btn-primary active"> -->
+    <!-- 	      <input type="radio" name="property" id="Property1" autocomplete="off" checked> Property 1 -->
+    <!-- 	    </label> -->
+    <!-- 	    <label class="btn btn-primary"> -->
+    <!-- 	      <input type="radio" name="property" id="Property2" autocomplete="off"> Property 2 -->
+    <!-- 	    </label> -->
+    <!-- 	    <label class="btn btn-primary"> -->
+    <!-- 	      <input type="radio" name="property" id="Property3" autocomplete="off"> Property 3 -->
+    <!-- 	    </label> -->
+    <!-- 	  </div> -->
+    <!-- 	</div> <\!-- properties -\-> -->
+	
+    <!-- 	<div class="row" style="width: 600px; text-align: center; margin-left: auto; margin-right: auto;"> -->
+    <!-- 	  <h3>Property Details</h3> -->
+    <!-- 	  <table id="property-details" class="table" style="margin-top: 20px"> -->
+    <!-- 	    <tbody> -->
+    <!-- 	      <tr> -->
+    <!-- 		<th>Name</th> -->
+    <!-- 		<td></td> -->
+    <!-- 	      </tr> -->
+    <!-- 	      <tr> -->
+    <!-- 		<th>Postcode</th> -->
+    <!-- 		<td></td> -->
+    <!-- 	      </tr> -->
+    <!-- 	      <tr> -->
+    <!-- 		<th>Type</th> -->
+    <!-- 		<td></td> -->
+    <!-- 	      </tr> -->
+    <!-- 	    </tbody> -->
+    <!-- 	  </table> -->
+    <!-- 	</div> <\!-- property details -\-> -->
+    <!--   </section> <\!-- properties section -\-> -->
+    <!-- </div> -->
     
-    <div id="graphs" class="container" style="text-align: center; position: relative; width: 960px;">
-      <div style="auto; text-align: center">
-	<h2>Data</h2>
-      </div>
-      <div id="graph-var-selector" class="dropdown" style="position: absolute; left: 2%; top: 20px; float: left;">
-      	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      	  Temperature
-      	  <span class="caret"></span>
-      	</button>
-      	<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-      	  <li id="temp-select" class="var-select">Temperature</li>
-      	  <li id="humidity-select" class="var-select">Humidity</li>
-      	  <li id="light-select" class="var-select">Light</li>
-      	  <li id="vacancy-select" class="var-select">Vacancy</li>
-      	</ul>
-      </div>
-      <div id="graph-sensor-selector" class="dropdown" style="">
-      	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      	  <span class="caret"></span>
-      	</button>
-      	<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1" style="">
-      	</ul>
-      </div>
-    </div>
+    <!-- <div id="graphs" class="container" style="text-align: center; position: relative; width: 960px;"> -->
+    <!--   <div style="auto; text-align: center"> -->
+    <!-- 	<h2>Data</h2> -->
+    <!--   </div> -->
+    <!--   <div id="graph-var-selector" class="dropdown" style="position: absolute; left: 2%; top: 20px; float: left;"> -->
+    <!--   	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> -->
+    <!--   	  Temperature -->
+    <!--   	  <span class="caret"></span> -->
+    <!--   	</button> -->
+    <!--   	<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1"> -->
+    <!--   	  <li id="temp-select" class="var-select">Temperature</li> -->
+    <!--   	  <li id="humidity-select" class="var-select">Humidity</li> -->
+    <!--   	  <li id="light-select" class="var-select">Light</li> -->
+    <!--   	  <li id="vacancy-select" class="var-select">Vacancy</li> -->
+    <!--   	</ul> -->
+    <!--   </div> -->
+    <!--   <div id="graph-sensor-selector" class="dropdown" style=""> -->
+    <!--   	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> -->
+    <!--   	  <span class="caret"></span> -->
+    <!--   	</button> -->
+    <!--   	<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1" style=""> -->
+    <!--   	</ul> -->
+    <!--   </div> -->
+    <!-- </div> -->
     
-    <div class="panel-footer" style="height: 50px;"></div>
+    <!-- <div class="panel-footer" style="height: 50px;"></div> -->
     
-    <script src="{% static 'brent/properties.js' %}"></script>
-    <script src="{% static 'brent/home.js' %}"></script>
+    <!-- <script src="{% static 'properties.js' %}"></script> -->
+    <script src="{% static 'home.js' %}"></script>
     
   </body>
   
